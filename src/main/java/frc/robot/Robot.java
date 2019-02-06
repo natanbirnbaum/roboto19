@@ -124,15 +124,15 @@ public class Robot extends TimedRobot {
 		driver.arcadeDrive(forwardSpeed, rotationSpeed, true);
 
 		
-		// camera button
-		boolean cameraButton = controller.getRawButton(1);
-		if (camera1Selected) {
-			server.setSource(camera2);
-			camera1Selected = false;
-		} else {
-			server.setSource(camera1);
-			camera1Selected = true;
-		}
+		// // camera button
+		// boolean cameraButton = controller.getRawButton(1);
+		// if (camera1Selected) {
+		// 	server.setSource(camera2);
+		// 	camera1Selected = false;
+		// } else {
+		// 	server.setSource(camera1);
+		// 	camera1Selected = true;
+		// }
 		
 	}
 }
