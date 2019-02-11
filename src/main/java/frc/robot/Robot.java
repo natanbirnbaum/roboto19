@@ -6,9 +6,10 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+//import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -37,8 +38,13 @@ public class Robot extends TimedRobot {
 
 	Spark leftmotor = new Spark(0);
 	Spark rightmotor = new Spark(1);
-	Joystick controller = new Joystick(0);
+	Joystick controller = new Joystick(1);
+	// Joystick controller2 = new Joystick(0);
+	Servo arm = new Servo(2);
+	
+
 	DifferentialDrive driver = new DifferentialDrive(leftmotor, rightmotor);
+
 
 	UsbCamera camera1;
 	UsbCamera camera2;
@@ -106,14 +112,16 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {		
+
+		// control tracks
 		double forwardSpeed;
 		double rotationSpeed;
 
 		double xAxis = controller.getRawAxis(0);
 		double yAxis = controller.getRawAxis(1);
-
-	  	boolean precisionButton = controller.getRawButton(6);
-		  
+	  	boolean precisionButton = controller.getRawButton(1);
+		
+		// set drive speed
 		if (!precisionButton){
 			forwardSpeed = yAxis;
 			rotationSpeed = xAxis;
@@ -122,6 +130,23 @@ public class Robot extends TimedRobot {
 			rotationSpeed = xAxis*0.5;
 		}
 		driver.arcadeDrive(forwardSpeed, rotationSpeed, true);
+
+		// control arm
+		// double yAxis2 = controller2.getRawAxis(1);
+		// if (yAxis2 > 0) {
+		// 	servomotor.set(1);
+		// } else if (yAxis2 < 0) {
+		// 	servomotor.set(0);
+		 
+		boolean btn2 = controller.getRawButton(2);
+		boolean btn3 = controller.getRawButton(3);
+		if (btn2) {
+
+		} else if (btn3) {
+
+		} else {
+			
+		}
 
 		
 		// // camera button
