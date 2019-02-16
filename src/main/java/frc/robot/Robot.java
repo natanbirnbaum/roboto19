@@ -5,15 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 package frc.robot;
-
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Relay;
 //import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
 // import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 // Camera imports
@@ -38,10 +42,12 @@ public class Robot extends TimedRobot {
 
 	Spark leftmotor = new Spark(0);
 	Spark rightmotor = new Spark(1);
-	Joystick controller = new Joystick(1);
-	// Joystick controller2 = new Joystick(0);
-	Servo arm = new Servo(2);
-	
+	Joystick driverController = new Joystick(1);
+    Joystick armController = new Joystick(0);
+	Servo servo = new Servo(2);
+	Relay arm = new Relay(0);
+	DigitalInput digitalInput1 = new DigitalInput(1);
+	DigitalInput digitalInput0 = new DigitalInput(0);
 
 	DifferentialDrive driver = new DifferentialDrive(leftmotor, rightmotor);
 
@@ -93,18 +99,18 @@ public class Robot extends TimedRobot {
 	/**
 	 * This function is called periodically during autonomous.
 	 */
-	@Override
-	public void autonomousPeriodic() {
-		switch (m_autoSelected) {
-			case kCustomAuto:
-				// Put custom auto code here
-				break;
-			case kDefaultAuto:
-			default:
-				// Put default auto code here
-				break;   
-		}
-	}
+	//@Override
+	//public void autonomousPeriodic() {
+	//	switch (m_autoSelected) {
+	//		case kCustomAuto:
+	//			// Put custom auto code here
+	//			break;
+	//		case kDefaultAuto:
+	//		default:
+	//			// Put default auto code here
+	//			break;   
+	//	}
+	//}
 
 	/**
 	 * This function is called periodically during operator control. I made it so that in the program the 
@@ -117,37 +123,48 @@ public class Robot extends TimedRobot {
 		double forwardSpeed;
 		double rotationSpeed;
 
-		double xAxis = controller.getRawAxis(0);
-		double yAxis = controller.getRawAxis(1);
-	  	boolean precisionButton = controller.getRawButton(1);
+		double xAxis = driverController.getRawAxis(0);
+		double yAxis = driverController.getRawAxis(1);
+	  	boolean precisionButton = driverController.getRawButton(1);
 		
 		// set drive speed
 		if (!precisionButton){
-			forwardSpeed = yAxis;
+			forwardSpeed = -yAxis;
 			rotationSpeed = xAxis;
 		} else{
-			forwardSpeed = yAxis*0.7;
+			forwardSpeed = -yAxis*0.7;
 			rotationSpeed = xAxis*0.5;
 		}
 		driver.arcadeDrive(forwardSpeed, rotationSpeed, true);
 
 		// control arm
-		// double yAxis2 = controller2.getRawAxis(1);
-		// if (yAxis2 > 0) {
-		// 	servomotor.set(1);
-		// } else if (yAxis2 < 0) {
-		// 	servomotor.set(0);
+		//double yAxis2 = servo.getRawAxis(0);
+		//if (yAxis2 > 0) {
+		/*	servo.set(1);
+		} else if (yAxis2 < 0) {
+			servo.set(0);
+		}
+		*/
+		
 		 
-		boolean btn2 = controller.getRawButton(2);
-		boolean btn3 = controller.getRawButton(3);
-		if (btn2) {
+		boolean forwardButton = armController.getRawButton(8);
+		boolean reverseButton = armController.getRawButton(7);
+		boolean allowForward = digitalInput1.get();
+		boolean allowReverse = digitalInput0.get();
 
-		} else if (btn3) {
-
-		} else {
-			
+		if (forwardButton && reverseButton) {
+			// causes robot to disconnect.
+			return;
 		}
 
+		arm.set(Value.kOff);
+		if (forwardButton && allowForward) {
+			arm.set(Value.kForward);
+			servo.set(1);
+		} else if (reverseButton && allowReverse) {
+			arm.set(Value.kReverse);
+			servo.set(1);
+		}
 		
 		// // camera button
 		// boolean cameraButton = controller.getRawButton(1);
